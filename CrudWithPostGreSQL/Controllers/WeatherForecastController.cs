@@ -39,6 +39,19 @@ namespace CrudWithPostGreSQL.Controllers
             }
             return Ok(departmentList);
         }
+        [HttpPost(nameof(PostData))]
+        public async Task<IActionResult> PostData(string DepartmentName)
+        {
+            string query = @"Insert into Department (DepartmentName) values(@DepartmentName)";
+            string sqlDataSource = _configuration.GetConnectionString(_conStr);
+            using (NpgsqlConnection myCon = new NpgsqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                var res = await myCon.ExecuteAsync(query, new {DepartmentName = DepartmentName});
+                myCon.Close();
+            }
+            return Ok("Data Inserted !");
+        }
     }
 
     
