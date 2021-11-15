@@ -1,16 +1,11 @@
+using CrudWithPostGreSQL.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CrudWithPostGreSQL
 {
@@ -35,6 +30,8 @@ namespace CrudWithPostGreSQL
             //Enable CORS
             services.AddCors(c => c.AddPolicy("AllowOrigin", o => o.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
+            var sqlConnectionString = Configuration.GetConnectionString("myconn");
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(sqlConnectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,7 +43,7 @@ namespace CrudWithPostGreSQL
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CrudWithPostGreSQL v1"));
             }
-            app.UseCors(app =>app.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(app => app.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseHttpsRedirection();
 
             app.UseRouting();

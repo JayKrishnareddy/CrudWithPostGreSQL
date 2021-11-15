@@ -1,6 +1,7 @@
 ﻿using CrudWithPostGreSQL.Models;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Npgsql;
@@ -15,14 +16,15 @@ namespace CrudWithPostGreSQL.Controllers
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
-    {       
-
+    {
+        private readonly AppDbContext _appDbContext;
         private readonly IConfiguration _configuration;
         private readonly string _conStr = "myconn";
 
-        public WeatherForecastController(IConfiguration configuration)
+        public WeatherForecastController(IConfiguration configuration,AppDbContext appDbContext)
         {
             _configuration = configuration;
+            _appDbContext = appDbContext;
         }
 
         [HttpGet(nameof(GetData))]
@@ -52,6 +54,9 @@ namespace CrudWithPostGreSQL.Controllers
             }
             return Ok("Data Inserted !");
         }
+
+        [HttpGet(nameof(GetDataEFCore))]
+        public async Task<IActionResult> GetDataEFCore() => Ok(await _appDbContext.Employees.ToListAsync());
     }
 
     
