@@ -30,8 +30,8 @@ namespace CrudWithPostGreSQL
             //Enable CORS
             services.AddCors(c => c.AddPolicy("AllowOrigin", o => o.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
-            var sqlConnectionString = Configuration.GetConnectionString("myconn");
-            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(sqlConnectionString));
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("myconn")));
+            services.AddScoped<IDataContext>(provider => provider.GetService<AppDbContext>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
